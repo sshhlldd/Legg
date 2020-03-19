@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+    <meta content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <title>摇摇蛋</title>
+    <script type="text/javascript" src="../Public/lib/Box2dWeb-2.1.a.3.min.js"></script>
+    <script type="text/javascript" src="../Public/lib/lufylegend-1.10.1.min.js"></script>
+    <script type="text/javascript" src="../Public/lib/lufylegend.LoadingSample4-0.1.0.min.js"></script>
+    <script type="text/javascript" src="../Public/lib/zepto.min.js"></script>
+    <style>
+    body {
+        background: #fff;
+    }
+
+    * {
+        margin: 0;
+        padding: 0
+    }
+
+    .logocon {
+        display: -webkit-flex;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 99;
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        height: 70px;
+        background: rgba(0, 0, 0, 0.4);
+        align-items: center;
+        margin-bottom: 2%;
+    }
+    .sharecon {
+        position: fixed;
+        top: 2px;
+        right: 2px;
+        z-index: 999;
+    }
+
+    .logocon .logoimg {
+        width: 20%;
+        text-align: center;
+    }
+
+    .logocon .cont {
+        color: #fcf8e6;
+        letter-spacing: 1px;
+        font-size: 14px;
+        width: 80%;
+    }
+
+    .logocon .cont a {
+        color: #fee549;
+        padding-left: 1%;
+        font-size: 16px;
+    }
+
+    .ec_pop {
+        width: 100%;
+    }
+
+    .ec_pop .cover {
+        width: 100%;
+        height: 100%;
+        position: fixed;
+        top: 0px;
+        left: 0px;
+        background-color: #000000;
+        opacity: 0.7;
+        z-index: 9998;
+    }
+
+    .ec_pop .pop_box {
+        width: 80%;
+        position: fixed;
+        top: 17%;
+        left: 10%;
+        z-index: 9999;
+    }
+
+    .ec_pop .pop_head {
+        padding: 10px;
+        min-height: 20px;
+        background: #01b7d3;
+        border-top-left-radius: 25px;
+        border-top-right-radius: 25px;
+    }
+
+    .ec_pop .pop_head h4 {
+        font-weight: normal;
+        font-size: 18px;
+        color: #fff;
+    }
+
+    .ec_pop .pop_body {
+        position: relative;
+        padding: 10px;
+        background: #4ad2ed;
+        min-height: 250px;
+        max-height: 350px;
+        overflow: auto;
+        border-bottom-left-radius: 25px;
+        border-bottom-right-radius: 25px;
+    }
+
+    .ec_pop button.close {
+        -webkit-appearance: none;
+        padding: 0;
+        cursor: pointer;
+        background: 0 0;
+        border: 0;
+    }
+
+    .ec_pop .close {
+        float: right;
+        font-size: 24px;
+        font-weight: 700;
+        line-height: 1;
+        color: #fff;
+        filter: alpha(opacity=20);
+    }
+
+    .ec_pop .pop_foot {
+        padding: 15px;
+        text-align: right;
+        border-top: 1px solid #e5e5e5;
+    }
+
+    @keyframes dialogue-in {
+        0% {
+            top: 0;
+        }
+        50% {
+            top: 17%;
+        }
+        90% {
+            top: 13%;
+        }
+        100% {
+            top: 17%;
+        }
+    }
+
+    @-webkit-keyframes dialogue-in {
+        0% {
+            top: 0;
+        }
+        50% {
+            top: 17%;
+        }
+        90% {
+            top: 13%;
+        }
+        100% {
+            top: 17%;
+        }
+    }
+
+    .animation-dialogue-in {
+        display: block;
+        -webkit-animation: dialogue-in 0.5s cubic-bezier(0.215, 0.610, 0.355, 1.000);
+    }
+
+    .ec_pop .btncon {
+        margin-bottom: 3%;
+        text-align: center;
+    }
+
+    .ec_pop .btncon a {
+        width: 70%;
+        background: #ff5b73;
+        color: #fff;
+        padding: 2% 0;
+        font-size: 16px;
+        border-radius: 25px;
+        letter-spacing: 3px;
+        border: 1px solid #fff;
+    }
+
+    .ec_pop h5 {
+        font-size: 18px;
+        color: #fee300;
+        letter-spacing: 5px;
+        text-shadow: 0px 0px 2px #000;
+        margin: 5% 0;
+        text-align: center;
+    }
+
+    .ec_pop .share i {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        background: url("../images/share.png") no-repeat 0 0;
+        background-size: 100%;
+        vertical-align: middle;
+        margin-right: 5px;
+    }
+
+    .ec_pop .share span {
+        vertical-align: middle;
+    }
+    /*隐藏滚动条*/
+
+    .forbid-scroll {
+        height: 100%;
+        overflow: hidden;
+    }
+    </style>
+</head>
+
+<body>
+    <div class="logocon">
+        <div class="logoimg">
+            <img src="../Public/egg/images/logo.png" height="50px">
+        </div>
+        <div class="cont">
+            <p>O2O客戶服務平台（EC2）</p>
+            <p>請關注粉絲專頁
+                <a href="javascript">福皓整合科技</a>
+            </p>
+        </div>
+    </div>
+    <!-- <div class="sharecon">
+        <iframe src="https://www.facebook.com/plugins/like.php?href=https%3A%2F%2Fwww.facebook.com%2FFull2house%2F&width=50&layout=box_count&action=like&size=large&show_faces=false&share=false&height=65&appId=382298112140973" width="50" height="65" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowTransparency="true"></iframe>
+    </div> -->
+    <div id="legend"></div>
+    <script>
+    init(40, "legend", 750, 1330, main);
+    var baseUrl = '../Public/egg/images/';
+    var imgData = [{
+            name: "bg",
+            path: baseUrl + "bg.jpg"
+        }, {
+            name: "ball",
+            path: baseUrl + "ball.png"
+        }, {
+            name: "tip",
+            path: baseUrl + "tip.png"
+        }, {
+            name: "more",
+            path: baseUrl + "more.png"
+        }, {
+            name: "egg0",
+            path: baseUrl + "egg1.png"
+        }, {
+            name: "egg1",
+            path: baseUrl + "egg2.png"
+        }, {
+            name: "egg2",
+            path: baseUrl + "egg3.png"
+        }, {
+            name: "egg3",
+            path: baseUrl + "egg4.png"
+        }, {
+            name: "egg4",
+            path: baseUrl + "egg5.png"
+        }, {
+            name: "egg5",
+            path: baseUrl + "egg6.png"
+        }, {
+            name: "egg6",
+            path: baseUrl + "egg7.png"
+        }, {
+            name: "egg7",
+            path: baseUrl + "egg8.png"
+        }, {
+            name: "up0",
+            path: baseUrl + "eggup1.png"
+        }, {
+            name: "up1",
+            path: baseUrl + "eggup2.png"
+        }, {
+            name: "up2",
+            path: baseUrl + "eggup3.png"
+        }, {
+            name: "up3",
+            path: baseUrl + "eggup4.png"
+        }, {
+            name: "up4",
+            path: baseUrl + "eggup5.png"
+        }, {
+            name: "up5",
+            path: baseUrl + "eggup6.png"
+        }, {
+            name: "up6",
+            path: baseUrl + "eggup7.png"
+        }, {
+            name: "up7",
+            path: baseUrl + "eggup8.png"
+        }, {
+            name: "down0",
+            path: baseUrl + "eggdown1.png"
+        }, {
+            name: "down1",
+            path: baseUrl + "eggdown2.png"
+        }, {
+            name: "down2",
+            path: baseUrl + "eggdown3.png"
+        }, {
+            name: "down3",
+            path: baseUrl + "eggdown4.png"
+        }, {
+            name: "down4",
+            path: baseUrl + "eggdown5.png"
+        }, {
+            name: "down5",
+            path: baseUrl + "eggdown6.png"
+        }, {
+            name: "down6",
+            path: baseUrl + "eggdown7.png"
+        }, {
+            name: "down7",
+            path: baseUrl + "eggdown8.png"
+        }, {
+            name: "prize1",
+            path: baseUrl + "prize1.png"
+        }, {
+            name: "prize2",
+            path: baseUrl + "prize2.png"
+        }, {
+            name: "prize3",
+            path: baseUrl + "prize3.png"
+        }, {
+            name: "prize4",
+            path: baseUrl + "prize4.png"
+        }, {
+            name: "prize5",
+            path: baseUrl + "prize5.png"
+        }, {
+            name: "prize6",
+            path: baseUrl + "prize6.png"
+        }, {
+            name: "prize7",
+            path: baseUrl + "prize7.png"
+        }, {
+            name: "prize8",
+            path: baseUrl + "prize8.png"
+        }, {
+            name: "prize9",
+            path: baseUrl + "prizethank.png"
+        },
+
+    ];
+    var dataList = {};
+    var showPrize = [];
+    var gravity = [0, 9.8];
+    var egglist = [];
+    var myInterval, mysetTimeout;
+    var loadingLayer, backLayer, ballLayer, wallLayer, popLayer, firstLayer, topLayer;
+
+
+    function main() {
+
+        if (LGlobal.canTouch) {
+            LGlobal.stageScale = LStageScaleMode.NO_BORDER;
+            LSystem.screen(LStage.FULL_SCREEN);
+        } else {
+            LGlobal.stageScale = LStageScaleMode.SHOW_ALL;
+            LSystem.screen(LStage.FULL_SCREEN);
+            var cw = $('canvas').width();
+            var cm = $('canvas').css('marginLeft');
+            $('.logocon').css({
+                'width': cw,
+                'left': cm
+            });
+            var sw = cw + parseInt(cm) - 52 + 'px';
+            $('.sharecon').css({ 'left': sw });
+        }
+        LGlobal.setDebug(true);
+        LGlobal.preventDefault = false; //滚屏事件 true禁止滚平 flase滚屏
+        backLayer = new LSprite();
+        addChild(backLayer);
+        topLayer = new LSprite();
+        addChild(topLayer);
+        firstLayer = new LSprite();
+        addChild(firstLayer);
+        loadingLayer = new LoadingSample4();
+        addChild(loadingLayer);
+        /**读取图片*/
+        LLoadManage.load(
+            imgData,
+            function(progress) {
+                loadingLayer.setProgress(progress);
+            },
+            gameInit
+        );
+    }
+
+    function gameInit(result) {
+        dataList = result;
+        removeChild(loadingLayer);
+        loadingLayer = null;
+        //添加背景
+
+        bgBitmap = new LBitmap(new LBitmapData(dataList["bg"]));
+        backLayer.addChild(bgBitmap);
+
+        //奖项设置
+        //奖项设置
+        showPrize = [{
+            tip: "一等奖",
+            img: "prize1"
+        }, {
+            tip: "二等奖",
+            img: "prize2"
+        }, {
+            tip: "三等奖",
+            img: "prize3"
+        }, {
+            tip: "谢谢参与",
+            img: "prize9"
+        }, {
+            tip: "谢谢参与",
+            img: "prize9"
+        }, {
+            tip: "谢谢参与",
+            img: "prize9"
+        }, {
+            tip: "谢谢参与",
+            img: "prize9"
+        }, {
+            tip: "谢谢参与",
+            img: "prize9"
+        }, {
+            tip: "谢谢参与",
+            img: "prize9"
+        }];
+
+
+
+        ballLayer = new LSprite();
+        topLayer.addChild(ballLayer);
+        ballBitmap = new LBitmap(new LBitmapData(dataList["ball"]));
+        ballBitmap.x = 0;
+        ballBitmap.y = 234;
+        //ballBitmap.alpha = 0.3;
+        ballLayer.addChild(ballBitmap);
+        prizeBtn = new LButton(new LBitmap(new LBitmapData(dataList["more"], 70, 2, 110, 118)));
+        prizeBtn.x = 0;
+        prizeBtn.y = 1050;
+        topLayer.addChild(prizeBtn);
+        ruleBtn = new LButton(new LBitmap(new LBitmapData(dataList["more"], 198, 0, 110, 118)));
+        ruleBtn.x = 640
+        ruleBtn.y = 1050;
+        topLayer.addChild(ruleBtn);
+
+        LGlobal.box2d = new LBox2d(gravity);
+        addBall();
+        addWall();
+        addEvent();
+    }
+
+    function addBall() {
+        for (var i = 0; i < 8; i++) {
+            eLayer = new LSprite();
+            eLayer.x = 179 + Math.random() * 300;
+            eLayer.y = 490 + Math.random() * 20;
+            eLayer.name = "egg" + i;
+            eLayer.scaleY = eLayer.scaleX = 0.7 + Math.random() * 0.3;
+            backLayer.addChild(eLayer);
+            bitmap = new LBitmap(new LBitmapData(dataList["egg" + i]));
+            eLayer.addChild(bitmap);
+            eLayer.addBodyCircle(bitmap.getWidth() * 0.5, bitmap.getHeight() * 0.5, bitmap.getWidth() * 0.5, 1, .5,
+                .4, .5);
+
+            egglist.push(eLayer);
+        }
+
+
+    }
+
+    function addWall() {
+        //上
+        wallLayer = new LSprite();
+        wallLayer.x = 372;
+        wallLayer.y = 289;
+        backLayer.addChild(wallLayer);
+        wallLayer.addBodyPolygon(350, 10, 0);
+        //右上
+        wallLayer = new LSprite();
+        wallLayer.x = 600;
+        wallLayer.y = 405;
+        backLayer.addChild(wallLayer);
+        wallLayer.addBodyPolygon(300, 10, 0);
+        wallLayer.box2dBody.SetAngle(20);
+        //左上
+        wallLayer = new LSprite();
+        wallLayer.x = 145;
+        wallLayer.y = 405;
+        backLayer.addChild(wallLayer);
+        wallLayer.addBodyPolygon(300, 10, 0);
+        wallLayer.box2dBody.SetAngle(-20);
+
+        wallLayer = new LSprite();
+        wallLayer.x = 590;
+        wallLayer.y = 675;
+        backLayer.addChild(wallLayer);
+        wallLayer.addBodyPolygon(300, 10, 0);
+        wallLayer.box2dBody.SetAngle(90);
+
+        wallLayer = new LSprite();
+        wallLayer.x = 150;
+        wallLayer.y = 675;
+        backLayer.addChild(wallLayer);
+        wallLayer.addBodyPolygon(300, 10, 0);
+        wallLayer.box2dBody.SetAngle(-90);
+
+        wallLayer = new LSprite();
+        wallLayer.x = 372;
+        wallLayer.y = 730;
+        backLayer.addChild(wallLayer);
+        wallLayer.addBodyPolygon(380, 10, 0);
+        wallLayer.box2dBody.SetAngle(0);
+        gravityinit();
+    }
+
+    // 紧接着定义x、y、z记录三个轴的数据以及上一次出发的时间
+    var x, y, z, last_x = 0,
+        last_y = 0,
+        last_z = 0;
+    var speed = 10;
+    var flag;
+
+    function gravityinit() {
+        flag = true;　
+
+        if (LGlobal.canTouch) {
+            tipBitmap = new MiddleBitmap(new LBitmapData(dataList["tip"]));
+            tipBitmap.x = 375;
+            tipBitmap.y = 180;
+            tipBitmap.scaleX = tipBitmap.scaleY = 0;
+            //ballBitmap.alpha = 0.3;
+            backLayer.addChild(tipBitmap);
+            LTweenLite.to(tipBitmap, 1, {
+                scaleX: 0.7,
+                delay: 1,
+                scaleY: 0.7,
+                ease: LEasing.Quint.easeOut
+            });
+            if (window.DeviceMotionEvent) {　　　　
+                // 移动浏览器支持运动传感事件
+
+                //window.addEventListener('devicemotion', deviceMotionHandler, false);
+                ballLayer.addEventListener(LMouseEvent.MOUSE_DOWN, onBall);　
+
+            } else {　
+                ballLayer.addEventListener(LMouseEvent.MOUSE_DOWN, onBall);　　　　
+            }
+        } else {
+            ballLayer.addEventListener(LMouseEvent.MOUSE_DOWN, onBall);
+        }
+
+    }
+
+
+    function deviceMotionHandler(eventData) {　　 // 获取含重力的加速度
+        　　
+        var acceleration = eventData.accelerationIncludingGravity;
+
+        　　 // 获取当前时间
+        　　　
+
+        　　　
+        x = acceleration.x;　　　　
+        y = acceleration.y;　　　
+        if (Math.abs(x - last_x) > speed || Math.abs(y - last_y) > speed) {
+
+            if (x - last_x > 0) {
+                eggChange('left');
+            } else {
+                eggChange('right');
+            }
+        }　　　
+
+
+        　　　　
+        last_x = x;　　　　
+        last_y = y;　　　　　
+    }
+
+
+    function onBall() {
+        for (var i = 0; i < egglist.length; i++) {
+            egglist[i].setBodyMouseJoint(true);
+        }
+
+        mysetTimeout = setTimeout("eggOut()", 5000);
+    }
+
+    function eggChange(d) {
+        var rand = 0.5 + Math.random();
+
+        for (var i = 0; i < egglist.length; i++) {
+            var cx;
+            if (d === 'left') {
+                cx = egglist[i].box2dBody.GetPosition().x - rand;
+            } else {
+                cx = egglist[i].box2dBody.GetPosition().x + rand;
+            }
+
+            var cy = egglist[i].box2dBody.GetPosition().y - rand;
+            if (cy < 10) {
+                cy = 10;
+            }
+            if (cx > 15) {
+                cx = 15
+            }
+            if (cx < 9) {
+                cx = 9;
+            }
+
+            egglist[i].box2dBody.SetPosition(new LGlobal.box2d.b2Vec2(cx, cy));
+            egglist[i].box2dBody.SetAwake(true);
+
+            mysetTimeout = setTimeout("eggOut()", 5000)
+
+        }
+
+    }
+
+    function eggOut() {
+        window.clearTimeout(mysetTimeout);
+        if (LGlobal.canTouch) {
+            LTweenLite.to(tipBitmap, 1, {
+                scaleX: 0,
+                scaleY: 0,
+                ease: LEasing.Quint.easeOut
+            });
+            if (window.DeviceMotionEvent) {
+                window.removeEventListener('devicemotion', deviceMotionHandler);
+            } else {
+
+                ballLayer.removeEventListener(LMouseEvent.MOUSE_DOWN, onBall);
+                for (var i = 0; i < egglist.length; i++) {
+                    egglist[i].setBodyMouseJoint(false);
+                }
+            }
+        } else {
+            ballLayer.removeEventListener(LMouseEvent.MOUSE_DOWN, onBall);
+            for (var i = 0; i < egglist.length; i++) {
+                egglist[i].setBodyMouseJoint(false);
+            }
+        }
+
+
+        if (flag) {
+            var l = egglist.length - 1;
+            var eid = parseInt(Math.random() * l);
+            var name = egglist[eid].name;
+            var id = name.replace(/[^0-9]/ig, "");
+            backLayer.removeChild(egglist[eid]);
+            egglist.splice(eid, 1);
+            popLayer = new LSprite();
+            popLayer.x = 373;
+            popLayer.y = 1006;
+            popLayer.scaleX = popLayer.scaleY = 0
+            firstLayer.addChild(popLayer);
+            checkenBitmap = new LBitmap(new LBitmapData(dataList["more"], 382, 39, 316, 400));
+            checkenBitmap.x = 144;
+            checkenBitmap.y = 42;
+            popLayer.addChildAt(checkenBitmap, 0);
+            upEgg = new LBitmap(new LBitmapData(dataList["up" + id]));
+            upEgg.x = 0;
+            upEgg.y = 0;
+            //upEgg.scaleY=upEgg.scaleX=0.2;
+            popLayer.addChild(upEgg);
+            downEgg = new LBitmap(new LBitmapData(dataList["down" + id]));
+            downEgg.x = 0;
+            downEgg.y = 185;
+            //downEgg.scaleY=downEgg.scaleX=0.2;
+            popLayer.addChild(downEgg);
+
+            eggBig();
+            flag = false;
+        }
+
+
+
+    }
+
+    function eggBig() {
+        LTweenLite.to(popLayer, 0.3, {
+            scaleX: 0.2,
+            scaleY: 0.2,
+            x: 313,
+            y: 946,
+            ease: LEasing.Quint.easeOut
+        }).to(popLayer, 0.1, {
+            scaleX: 0.25,
+            scaleY: 0.15,
+            x: 300,
+            y: 966,
+            ease: LEasing.Quint.easeOut
+        }).to(popLayer, 0.2, {
+            scaleX: 0.3,
+            scaleY: 0.35,
+            x: 288,
+            y: 800,
+            ease: LEasing.Quint.easeOut
+        }).to(popLayer, 0.2, {
+            scaleX: 0.45,
+            scaleY: 0.4,
+            x: 244,
+            y: 1010,
+            ease: LEasing.Quint.easeOut
+        }).to(popLayer, 0.4, {
+            scaleX: 1,
+            scaleY: 1,
+            x: 80,
+            y: 300,
+            ease: LEasing.Quint.easeOut,
+            onComplete: function() {
+
+                maskbg = new LBitmap(new LBitmapData("#000000", 0, 0, 750, 1333));
+                maskbg.alpha = 0;
+                topLayer.addChild(maskbg);
+                LTweenLite.to(maskbg, 0.3, {
+                    alpha: 0.7,
+                    onComplete: function() {
+                        eggKnock();
+                    }
+                })
+            }
+
+        })
+    }
+
+    function eggKnock() {
+        myInterval = setInterval(eggAniFunc, 3000);
+        popLayer.addEventListener(LMouseEvent.MOUSE_DOWN, onEgg);
+    }
+
+    function eggAniFunc() {
+        var eggani = LTweenLite.to(popLayer, 0.1, {
+            x: 82,
+            ease: LEasing.Quint.easeOut
+        }).to(popLayer, 0.1, {
+            x: 74,
+        }).to(popLayer, 0.1, {
+            x: 90,
+            ease: LEasing.Quint.easeOut
+        }).to(popLayer, 0.1, {
+            x: 82,
+            ease: LEasing.Quint.easeOut
+        })
+    }
+
+    function onEgg() {
+        //随机奖项
+        popLayer.removeEventListener(LMouseEvent.MOUSE_DOWN, onEgg);
+        var id = Math.floor(Math.random() * 8);
+        clearInterval(myInterval);
+        prize = new LBitmap(new LBitmapData(dataList[showPrize[id].img]));
+        prize.x = 170;
+        prize.y = 100;
+        prize.alpha = 0;
+        prize.rotate = -90;
+        popLayer.addChildAt(prize, 1);
+        LTweenLite.to(upEgg, 0.6, {
+            x: 0,
+            y: -100
+        }).to(upEgg, 0.8, {
+            scaleX: 0.2,
+            scaleY: 0.2,
+            x: 850,
+            y: -300,
+            ease: LEasing.Quint.easeOut
+        })
+        LTweenLite.to(checkenBitmap, 0.3, {
+            y: 47,
+            delay: 0.3,
+            ease: LEasing.Quint.easeOut
+        }).to(checkenBitmap, 0.1, {
+            y: -20,
+            ease: LEasing.Quint.easeOut,
+            onComplete: function() {
+                maskback(id);
+            }
+        })
+
+    }
+
+    function addEvent() {
+        prizeBtn.mouseEnabled = true;
+        ruleBtn.mouseEnabled = true;
+        prizeBtn.addEventListener(LMouseEvent.MOUSE_DOWN, onprize);
+        ruleBtn.addEventListener(LMouseEvent.MOUSE_DOWN, onrule);
+    }
+
+
+    //显示按钮
+    function maskback(id) {
+        prize.alpha = 1;
+        LTweenLite.to(prize, 0.3, {
+            x: 366,
+            y: -40,
+            rotate: 0,
+            ease: LEasing.Strong.easeOut,
+            onComplete: function() {
+                var tip = showPrize[id].tip;
+                if (tip == '谢谢参与') {
+                    againBtn = new LButton(new LBitmap(new LBitmapData(dataList["more"], 0, 133, 384,
+                        96)), new LBitmap(new LBitmapData(dataList["more"], 0, 133, 384, 96)));
+                    againBtn.x = 110;
+                    againBtn.y = 500;
+                    popLayer.addChild(againBtn);
+                    againBtn.addEventListener(LMouseEvent.MOUSE_DOWN, onagain);
+                } else {
+                    useBtn = new LButton(new LBitmap(new LBitmapData(dataList["more"], 0, 339, 384, 96)),
+                        new LBitmap(new LBitmapData(dataList["more"], 0, 339, 384, 96)));
+                    useBtn.x = 110;
+                    useBtn.y = 500;
+                    popLayer.addChild(useBtn);
+                    useBtn.addEventListener(LMouseEvent.MOUSE_DOWN, onuse);
+                }
+
+                shareBtn = new LButton(new LBitmap(new LBitmapData(dataList["more"], 0, 236, 384, 96)),
+                    new LBitmap(new LBitmapData(dataList["more"], 0, 236, 384, 96)));
+                shareBtn.x = 110;
+                shareBtn.y = 620;
+
+                popLayer.addChild(shareBtn);
+
+                shareBtn.addEventListener(LMouseEvent.MOUSE_DOWN, onshare);
+            }
+        })
+    }
+    //再来一次
+    function onagain() {
+        LTweenLite.removeAll();
+        popLayer.removeAllChild();
+        topLayer.removeChild(maskbg);
+        againBtn.removeEventListener(LMouseEvent.MOUSE_DOWN, onagain);
+        shareBtn.removeEventListener(LMouseEvent.MOUSE_DOWN, onshare);
+
+        gravityinit();
+        $("body,html").removeClass("forbid-scroll");
+    }
+
+    function onshare() {
+
+        console.log('share');
+    }
+
+    function onuse() {
+        console.log('use');
+    }
+
+
+    function onprize() {
+        console.log('prize');
+    }
+
+    function onrule() {
+        var html =
+            '<div style="margin:0 auto;line-height:1.7;color:#fff;font-size:14px;">\
+                <p>活動時間：7月1日-7月6日<br />活動規則：<br />1.关注日日顺服务成为会员，即可点击“GO”参与活动；<br/> 2.每位会员每天有3次机会参与大转盘游戏;<br/> 3.10元购买指定款净水产品特权、净芯杯、微店优惠券、会员积分、10元话费等你来拿；<br/> 4.奖品信息以实际中奖结果为准，截图无效。<br/> *本活动最终解释权归日日顺服务所有<br/> *本活动最终解释权归日日顺服务所有<br/> *本活动最终解释权归日日顺服务所有<br/> *本活动最终解释权归日日顺服务所有<br/> *本活动最终解释权归日日顺服务所有<br/> *本活动最终解释权归日日顺服务所有<br/> *本活动最终解释权归日日顺服务所有<br/> *本活动最终解释权归日日顺服务所有<br/> *本活动最终解释权归日日顺服务所有<br/> *本活动最终解释权归日日顺服务所有</p></div>';
+        mypop('活动规则', html);
+        if (!LGlobal.canTouch) {
+            var cw = $('canvas').width();
+            var cm = $('canvas').css('marginLeft');
+            $('.ec_pop .pop_box').css({
+                'width': cw,
+                'left': cm
+            });
+        }
+    }
+    //中心点移到00
+    function MiddleBitmap(bitmapData) {
+        var self = this;
+        base(self, LSprite, []);
+        self.bitmapTitle = new LBitmap(bitmapData);
+        self.bitmapTitle.x = -self.bitmapTitle.getWidth() * 0.5;
+        self.bitmapTitle.y = -self.bitmapTitle.getHeight() * 0.5;
+        self.addChild(self.bitmapTitle);
+    }
+
+    function mypop(tit, html) {
+        $('.ec_pop').remove();
+
+        $('.ec_pop').off('click', '.close')
+        var modalDiv =
+            '<div class="ec_pop">\
+            <div class="cover"></div>\
+            <div class="pop_box">\
+            <div class="pop_head"><button type="button" class="close">×</button><h4>' +
+            tit + '</h4></div>\
+            <div class="pop_body" style="">' + html +
+            '</div>\
+            </div></div>';
+        $('body').append(modalDiv);
+        $(".pop_box").addClass("animation-dialogue-in");
+        $("body,html").addClass("forbid-scroll"); //弹出层后，禁用body和html滚动  
+        $('body').on('click', function(event) {
+            event.stopPropagation();
+        })
+        $('.ec_pop').on('click', '.close', function(event) {
+            event.stopPropagation();
+            $(this).parents('.ec_pop').hide();
+            $(".pop_box").removeClass("animation-dialogue-in");
+            $("body,html").removeClass("forbid-scroll");
+        })
+    }
+
+    //去掉微信导航
+    document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
+        WeixinJSBridge.call('hideToolbar');
+        WeixinJSBridge.call('hideOptionMenu');
+    });
+
+    //防止底部滑动
+    var touchTarget,
+        touchScreenX,
+        touchScreenY,
+        conditionParentUntilTrue,
+        disableScroll;
+
+    conditionParentUntilTrue = function(element, condition) {
+        var outcome;
+
+        if (element === document.body) {
+            return false;
+        }
+
+        outcome = condition(element);
+
+        if (outcome) {
+            return true;
+        } else {
+            return conditionParentUntilTrue(element.parentNode, condition);
+        }
+    };
+
+    window.addEventListener('touchstart', function(e) {
+        touchTarget = e.targetTouches[0].target;
+        scrollMap = {}
+
+        scrollMap.left = conditionParentUntilTrue(touchTarget, function(element) {
+            return element.scrollLeft > 0;
+        });
+
+        scrollMap.top = conditionParentUntilTrue(touchTarget, function(element) {
+            return element.scrollTop > 0;
+        });
+
+        scrollMap.right = conditionParentUntilTrue(touchTarget, function(element) {
+            return element.scrollWidth > element.clientWidth &&
+                element.scrollWidth - element.clientWidth > element.scrollLeft;
+        });
+
+        scrollMap.bottom = conditionParentUntilTrue(touchTarget, function(element) {
+            return element.scrollHeight > element.clientHeight &&
+                element.scrollHeight - element.clientHeight > element.scrollTop;
+        });
+
+        touchScreenX = e.targetTouches[0].screenX;
+        touchScreenY = e.targetTouches[0].screenY;
+        disableScroll = false;
+    });
+
+    window.addEventListener('touchmove', function(e) {
+        var moveScreenX,
+            moveScreenY;
+
+        if (disableScroll) {
+            e.preventDefault();
+            return;
+        }
+
+        moveScreenX = e.targetTouches[0].screenX;
+        moveScreenY = e.targetTouches[0].screenY;
+
+        if (
+            moveScreenX > touchScreenX && scrollMap.left ||
+            moveScreenY < touchScreenY && scrollMap.bottom ||
+            moveScreenX < touchScreenX && scrollMap.right ||
+            moveScreenY > touchScreenY && scrollMap.top
+        ) {} else {
+            e.preventDefault();
+            disableScroll = true;
+        }
+    });
+    </script>
+</body>
+
+</html>
