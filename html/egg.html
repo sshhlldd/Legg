@@ -6,7 +6,7 @@
     <meta content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-    <title>摇摇蛋</title>
+    <title>轉彩蛋</title>
     <script type="text/javascript" src="../Public/lib/Box2dWeb-2.1.a.3.min.js"></script>
     <script type="text/javascript" src="../Public/lib/lufylegend-1.10.1.min.js"></script>
     <script type="text/javascript" src="../Public/lib/lufylegend.LoadingSample4-0.1.0.min.js"></script>
@@ -373,7 +373,7 @@
             $('.sharecon').css({ 'left': sw });
         }
         LGlobal.setDebug(true);
-        LGlobal.preventDefault = false; //滚屏事件 true禁止滚平 flase滚屏
+        LGlobal.preventDefault = true; //滚屏事件 true禁止滚平 flase滚屏
         backLayer = new LSprite();
         addChild(backLayer);
         topLayer = new LSprite();
@@ -528,9 +528,7 @@
     var flag;
 
     function gravityinit() {
-        flag = true;　
-
-        if (LGlobal.canTouch) {
+            flag = true;　
             tipBitmap = new MiddleBitmap(new LBitmapData(dataList["tip"]));
             tipBitmap.x = 375;
             tipBitmap.y = 180;
@@ -543,18 +541,33 @@
                 scaleY: 0.7,
                 ease: LEasing.Quint.easeOut
             });
-            if (window.DeviceMotionEvent) {　　　　
-                // 移动浏览器支持运动传感事件
-
-                //window.addEventListener('devicemotion', deviceMotionHandler, false);
-                ballLayer.addEventListener(LMouseEvent.MOUSE_DOWN, onBall);　
-
-            } else {　
-                ballLayer.addEventListener(LMouseEvent.MOUSE_DOWN, onBall);　　　　
-            }
-        } else {
             ballLayer.addEventListener(LMouseEvent.MOUSE_DOWN, onBall);
-        }
+     
+        // if (LGlobal.canTouch) {
+        //     tipBitmap = new MiddleBitmap(new LBitmapData(dataList["tip"]));
+        //     tipBitmap.x = 375;
+        //     tipBitmap.y = 180;
+        //     tipBitmap.scaleX = tipBitmap.scaleY = 0;
+        //     //ballBitmap.alpha = 0.3;
+        //     backLayer.addChild(tipBitmap);
+        //     LTweenLite.to(tipBitmap, 1, {
+        //         scaleX: 0.7,
+        //         delay: 1,
+        //         scaleY: 0.7,
+        //         ease: LEasing.Quint.easeOut
+        //     });
+        //     if (window.DeviceMotionEvent) {　　　　
+        //         // 移动浏览器支持运动传感事件
+
+        //         //window.addEventListener('devicemotion', deviceMotionHandler, false);
+        //         ballLayer.addEventListener(LMouseEvent.MOUSE_DOWN, onBall);　
+
+        //     } else {　
+        //         ballLayer.addEventListener(LMouseEvent.MOUSE_DOWN, onBall);　　　　
+        //     }
+        // } else {
+        //     ballLayer.addEventListener(LMouseEvent.MOUSE_DOWN, onBall);
+        // }
 
     }
 
